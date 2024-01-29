@@ -1,0 +1,13 @@
+# Byte-compiled / optimized / DLL files
+*.pyc
+__pycache__
+
+# sqlite3 database file
+db.sqlite3
+
+# IDE
+.idea
+
+# Virtual Environment
+.env
+.venv
