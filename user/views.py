@@ -6,13 +6,13 @@ from user.serializers import UserSerializer
 from user.models import User
 
 
-class CreateUserAPIView(CreateAPIView):
+class UserCreate(CreateAPIView):
     permission_classes = [AllowAny, ]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class ProgressAPIView(GenericAPIView):
+class UpdateProgress(GenericAPIView):
     permission_classes = [AllowAny, ]  # TODO: authentication olacaksa permissionlari duzenle.
     queryset = User.objects.all()
     serializer_class = UserSerializer
