@@ -47,9 +47,11 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['country_code', ]
 
+    LEVEL_COMPLETE_COIN_REWARD = 100
+
     def complete_level(self):
         self.current_level += 1
-        self.coins += 100
+        self.coins += self.LEVEL_COMPLETE_COIN_REWARD
         self.save()
 
     def gain_coin(self, amount):
@@ -57,7 +59,12 @@ class User(AbstractBaseUser):
         self.save()
 
     def lose_coin(self, amount):
-        self.coins -= amount
+        current_coin = self.coins - amount
+
+        if current_coin < 0:
+            raise ValueError("Not enough coins")
+
+        self.coins = current_coin
         self.save()
 
     def delete(self, using=None, keep_parents=False):

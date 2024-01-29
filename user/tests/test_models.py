@@ -18,24 +18,42 @@ class UserModelTest(TestCase):
         self.assertTrue(user.check_password(password))
 
     def test_complete_level(self):
+        coins = 18650
+        current_level = 15
+
         user = User(
             username="testuser",
             country="US",
             password="testpassword",
-            coins=1860,
-            current_level=15
+            coins=coins,
+            current_level=current_level
         )
         user.complete_level()
 
-        self.assertEqual(user.current_level, 16)
-        self.assertEqual(user.coins, 1960)
+        self.assertEqual(user.current_level, current_level + 1)
+        self.assertEqual(user.coins, coins + User.LEVEL_COMPLETE_COIN_REWARD)
 
     def test_gain_coin(self):
-        user = User(username="testuser", country="US", password="testpassword")
-        user.gain_coin(100)
-        self.assertEqual(user.coins, 1100)
+        coins = 18650
+        gained_coin = 100
+
+        user = User(username="testuser", country="US", password="testpassword", coins=coins)
+        user.gain_coin(gained_coin)
+        self.assertEqual(user.coins, coins + gained_coin)
 
     def test_lose_coin(self):
-        user = User(username="testuser", country="US", password="testpassword")
+        coins = 18650
+        lost_coin = 100
+
+        user = User(username="testuser", country="US", password="testpassword", coins=coins)
         user.lose_coin(100)
-        self.assertEqual(user.coins, 900)
+        self.assertEqual(user.coins, coins - lost_coin)
+
+    def test_not_enough_coin(self):
+        coins = 50
+        lost_coin = 100
+
+        user = User(username="testuser", country="US", password="testpassword", coins=coins)
+
+        with self.assertRaises(ValueError):
+            user.lose_coin(lost_coin)
