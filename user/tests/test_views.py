@@ -24,6 +24,8 @@ class CreateViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.get('username'), 'test')
         self.assertEqual(response.data.get('country'), 'US')
+        self.assertEqual(response.data.get('current_level'), 1)
+        self.assertEqual(response.data.get('coins'), 1000)
 
     def test_duplicate_username(self):
         User.objects.create_user(username='test', password='testpassword', country='US')

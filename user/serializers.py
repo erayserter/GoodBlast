@@ -10,7 +10,7 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "username", "password", "country", "coins", "created_at", "updated_at"]
+        fields = ["id", "username", "password", "country", "coins", "current_level", "created_at", "updated_at"]
         lookup_field = 'username'
 
     def validate_username(self, value):

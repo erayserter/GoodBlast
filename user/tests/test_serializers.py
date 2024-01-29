@@ -39,7 +39,7 @@ class UserSerializerTestCase(APITestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual(serializer.errors['country'][0].code, 'invalid_choice')
 
-    def test_user_serializer_create(self):
+    def test_create(self):
         data = {
             'username': 'testuser',
             'password': 'testpassword',

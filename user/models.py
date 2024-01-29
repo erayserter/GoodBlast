@@ -37,6 +37,7 @@ class User(AbstractBaseUser):
     )
     coins = models.IntegerField(default=1000)
     country = CountryField()
+    current_level = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted = models.BooleanField(default=False)
@@ -45,6 +46,11 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['country_code', ]
+
+    def complete_level(self):
+        self.current_level += 1
+        self.coins += 100
+        self.save()
 
     def gain_coin(self, amount):
         self.coins += amount
