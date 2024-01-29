@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase, APIClient
 from user.models import User
 
 
-class CreateViewTestCase(APITestCase):
+class UserCreateViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
