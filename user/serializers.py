@@ -14,3 +14,9 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "password", "country", "coins", "current_level", "created_at", "updated_at"]
         lookup_field = 'username'
+
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username", "password", ]

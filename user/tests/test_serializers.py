@@ -4,7 +4,7 @@ from user.models import User
 from user.serializers import UserSerializer
 
 
-class UserSerializerTest(APITestCase):
+class UserCreateSerializerTest(APITestCase):
     def test_valid_data(self):
         data = {
             'username': 'testuser',

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django_countries.fields import CountryField
 
+from tournament.models import Tournament
+
 
 class UserManager(BaseUserManager):
     def create_user(self, username, country, password=None):
@@ -49,9 +51,9 @@ class User(AbstractBaseUser):
 
     LEVEL_COMPLETE_COIN_REWARD = 100
 
-    def complete_level(self):
-        self.current_level += 1
-        self.coins += self.LEVEL_COMPLETE_COIN_REWARD
+    def complete_levels(self, level_count):
+        self.current_level += level_count
+        self.coins += self.LEVEL_COMPLETE_COIN_REWARD * level_count
         self.save()
 
     def gain_coin(self, amount):

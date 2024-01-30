@@ -28,10 +28,11 @@ class UserModelTest(TestCase):
             coins=coins,
             current_level=current_level
         )
-        user.complete_level()
+        level_count = 5
+        user.complete_levels(level_count)
 
-        self.assertEqual(user.current_level, current_level + 1)
-        self.assertEqual(user.coins, coins + User.LEVEL_COMPLETE_COIN_REWARD)
+        self.assertEqual(user.current_level, current_level + level_count)
+        self.assertEqual(user.coins, coins + User.LEVEL_COMPLETE_COIN_REWARD * level_count)
 
     def test_gain_coin(self):
         coins = 18650
