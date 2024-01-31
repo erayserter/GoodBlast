@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  web:
+    build: .
+    command: sh -c "python manage.py makemigrations &&
+                   python manage.py migrate &&
+                   python manage.py runserver 0.0.0.0:8000"
+    volumes:
+     - static_volume:/home/app/web/staticfiles
+     - media_volume:/home/app/web/mediafiles
+    expose:
+    - 8000:8000
+    restart: "on-failure"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+     - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=password
+     - POSTGRES_DB=postgres
+volumes:
+ postgres_data:
+ static_volume:
+ media_volume:
