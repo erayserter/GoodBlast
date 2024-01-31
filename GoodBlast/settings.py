@@ -1,4 +1,3 @@
-from celery.schedules import crontab
 from pathlib import Path
 from datetime import timedelta
 
