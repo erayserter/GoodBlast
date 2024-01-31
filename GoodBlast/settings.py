@@ -11,6 +11,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'django_apscheduler',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,13 +47,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'GoodBlast.urls'
-
-CELERY_BEAT_SCHEDULE = {
-    'execute_my_task_daily_at_midnight': {
-        'task': 'tournament.tasks.my_scheduled_task',
-        'schedule': crontab(hour=0, minute=0),
-    },
-}
 
 TEMPLATES = [
     {
