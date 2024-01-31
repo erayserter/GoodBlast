@@ -1,9 +1,10 @@
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from user.permissions import IsPersonalAccountOrReadOnly
-from user.serializers import UserSerializer
+from user.serializers import UserSerializer, UserUpdateProcessSerializer
 from user.models import User
 
 
@@ -14,22 +15,27 @@ class UserCreate(CreateAPIView):
 
 
 class UserRetrieveDestroy(RetrieveDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsPersonalAccountOrReadOnly]
+    permission_classes = [IsAuthenticated, IsPersonalAccountOrReadOnly, ]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
 
 
-class UpdateProgress(GenericAPIView):
-    permission_classes = [IsAuthenticated, ]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    lookup_field = 'username'
+class UserUpdateProgress(GenericAPIView):
+    permission_classes = [IsAuthenticated, IsPersonalAccountOrReadOnly, ]
+    serializer_class = UserUpdateProcessSerializer
 
-    def get(self, request, *args, **kwargs):  # TODO: birden fazla bolum gecilebiliyorsa gectigi bolum sayisini al.
-        user = self.get_object()  # TODO: authentication olacaksa permissionlari duzenle.
-        user.complete_level()
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        completed_level_count = serializer.validated_data.get('completed_level_count')
+
+        user = request.user
+        user.complete_levels(completed_level_count)
+
         return Response({
-            "new_coins": user.coins,
+            "coins": user.coins,
             "current_level": user.current_level,
         })

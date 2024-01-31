@@ -69,9 +69,5 @@ class User(AbstractBaseUser):
         self.coins = current_coin
         self.save()
 
-    def delete(self, using=None, keep_parents=False):
-        self.deleted = True
-        self.save()
-
     def __str__(self):
         return self.username

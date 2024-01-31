@@ -15,8 +15,15 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
         fields = ["id", "username", "password", "country", "coins", "current_level", "created_at", "updated_at"]
         lookup_field = 'username'
 
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            country=validated_data['country']
+        )
+        user.save()
+        return user
 
-class UserLoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["username", "password", ]
+
+class UserUpdateProcessSerializer(serializers.Serializer):
+    completed_level_count = serializers.IntegerField(min_value=1)
