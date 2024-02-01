@@ -12,7 +12,29 @@ class EnterTournament(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
+
+        if timezone.now().hour >= Tournament.ENTRY_END_HOUR:
+            return Response({
+                "message": "Tournament entry time has passed."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if user.coins < Tournament.ENTRY_FEE:
+            return Response({
+                "message": "You do not have enough coins to enter the tournament."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if user.current_level < Tournament.USER_LEVEL_REQUIREMENT:
+            return Response({
+                "message": "You do not have enough level to enter the tournament."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         tournament = Tournament.get_current_tournament()
+
+        if UserTournamentGroup.objects.filter(user=user, group__tournament=tournament).exists():
+            return Response({
+                "message": "You have already entered the tournament."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         tournament_group = UserTournamentGroup.enter_tournament(user, tournament)
 
         return Response({
@@ -44,7 +66,13 @@ class ClaimTournamentReward(GenericAPIView):
             for group in users_passed_completed_groups:
                 group.claim_reward()
         else:
-            users_tournament_group = users_passed_completed_groups.filter(group__tournament__id=tournament_id)
+            users_tournament_group = users_passed_completed_groups.filter(group__tournament__id=tournament_id).first()
+
+            if not users_tournament_group:
+                return Response({
+                    "message": "There is no completed tournament with this ID."
+                }, status=status.HTTP_404_NOT_FOUND)
+
             users_tournament_group.claim_reward()
 
         return Response({
