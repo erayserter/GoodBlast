@@ -93,7 +93,9 @@ class UserTournamentGroup(models.Model):
 
         if (user.coins < tournament.ENTRY_FEE
                 or user.current_level < tournament.USER_LEVEL_REQUIREMENT
-                or utc_now < utc_now.replace(hour=12, minute=0, second=0, microsecond=0)):
+                or utc_now > utc_now.replace(hour=12, minute=0, second=0, microsecond=0)
+                or utc_now.date() != tournament.date
+                or cls.objects.filter(user=user, group__tournament=tournament).exists()):
             return None
 
         user.coins -= tournament.ENTRY_FEE
@@ -123,13 +125,13 @@ class UserTournamentGroup(models.Model):
 
     def claim_reward(self):
         if self.claimed_reward:
-            return
+            raise ValueError("User has already claimed the reward.")
 
         ranked_group = self.get_group_with_ranks(self.group)
         rank = ranked_group.get(user=self.user).rank
 
         if not TournamentGroup.is_eligible_for_reward(rank):
-            return
+            raise ValueError("User is not eligible for the reward.")
 
         reward = TournamentGroup.get_ranks_reward(rank)
 
