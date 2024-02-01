@@ -9,5 +9,5 @@ db.sqlite3
 .idea
 
 # Virtual Environment
-.env
+.env*
 .venv

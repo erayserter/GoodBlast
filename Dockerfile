@@ -1,4 +1,4 @@
-FROM python:3.11-alpine as web
+FROM python:3.11-slim-bullseye as web
 
 # Setting up the work directory
 WORKDIR /home/app/
