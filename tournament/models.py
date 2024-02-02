@@ -73,7 +73,6 @@ class UserTournamentGroup(models.Model):
     user = models.ForeignKey('user.User', on_delete=models.CASCADE)
     group = models.ForeignKey(TournamentGroup, on_delete=models.CASCADE, related_name='users')
     score = models.IntegerField(default=0)
-    entered_at = models.DateTimeField(auto_now_add=True)
     claimed_reward = models.BooleanField(default=False)
 
     class Meta:
