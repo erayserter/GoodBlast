@@ -3,6 +3,7 @@ from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveDestr
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from tournament.models import Tournament, UserTournamentGroup
 from user.permissions import IsPersonalAccountOrReadOnly
 from user.serializers import UserSerializer, UserUpdateProcessSerializer
 from user.models import User
@@ -34,6 +35,13 @@ class UserUpdateProgress(GenericAPIView):
 
         user = request.user
         user.complete_levels(completed_level_count)
+
+        tournament = Tournament.get_current_tournament()
+        user_group = UserTournamentGroup.objects.filter(user=user, tournament=tournament)
+
+        if user_group.exists():
+            user_group = user_group.first()
+            user_group.update_progress(completed_level_count)
 
         return Response({
             "coins": user.coins,
