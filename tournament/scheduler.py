@@ -34,9 +34,6 @@ def start():
         replace_existing=True,
     )
 
-    try:
-        Tournament.get_current_tournament()
-    except Tournament.DoesNotExist:
-        Tournament.objects.create(date=timezone.now().date())
+    Tournament.objects.get_or_create(date=timezone.now().date())
 
     scheduler.start()
