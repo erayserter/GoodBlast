@@ -139,12 +139,13 @@ class ClaimTournamentRewardViewTest(APITestCase):
         self.client = APIClient()
 
     def test_success(self):
+        old_coins = 2345
         user = User(
             username='test',
             password='testpassword',
             country='US',
             current_level=Tournament.USER_LEVEL_REQUIREMENT,
-            coins=Tournament.ENTRY_FEE
+            coins=old_coins
         )
         user.save()
         self.client.force_authenticate(user=user)
@@ -161,19 +162,18 @@ class ClaimTournamentRewardViewTest(APITestCase):
             mock_now.return_value = now + timezone.timedelta(days=1)
             response = self.client.post(url, data={'tournament': tournament.id})
 
-        print(response.data)
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.get('coins'), TournamentGroup.get_ranks_reward(1))
-        self.assertEqual(user.coins, TournamentGroup.get_ranks_reward(1))
+        self.assertEqual(response.data.get('coins'), TournamentGroup.get_ranks_reward(1) + old_coins)
+        self.assertEqual(user.coins, TournamentGroup.get_ranks_reward(1) + old_coins)
 
     def test_success_claim_all(self):
+        old_coins = 2356
         user = User(
             username='test',
             password='testpassword',
             country='US',
             current_level=Tournament.USER_LEVEL_REQUIREMENT,
-            coins=Tournament.ENTRY_FEE*2
+            coins=old_coins
         )
         user.save()
         self.client.force_authenticate(user=user)
@@ -194,8 +194,8 @@ class ClaimTournamentRewardViewTest(APITestCase):
             response = self.client.post(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data.get('coins'), TournamentGroup.get_ranks_reward(1) * 2)
-        self.assertEqual(user.coins, TournamentGroup.get_ranks_reward(1) * 2)
+        self.assertEqual(response.data.get('coins'), TournamentGroup.get_ranks_reward(1) * 2 + old_coins)
+        self.assertEqual(user.coins, TournamentGroup.get_ranks_reward(1) * 2 + old_coins)
 
     def test_failure_due_to_no_completed_groups(self):
         user = User(

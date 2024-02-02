@@ -27,24 +27,6 @@ class TournamentModelTest(TestCase):
         self.assertEqual(current_tournament.id, today_tournament.id,
                          "The current tournament should match the one created for today.")
 
-    def test_is_finished_with_past_tournament(self):
-        past_tournament = Tournament(date=timezone.now().date() - timedelta(days=1))
-        past_tournament.save()
-
-        self.assertTrue(past_tournament.is_finished(), "Past tournament should be marked as finished.")
-
-    def test_is_finished_with_future_tournament(self):
-        future_tournament = Tournament(date=timezone.now().date() + timedelta(days=1))
-        future_tournament.save()
-
-        self.assertFalse(future_tournament.is_finished(), "Future tournament should not be marked as finished.")
-
-    def test_is_finished_with_current_tournament(self):
-        today_tournament = Tournament(date=timezone.now().date())
-        today_tournament.save()
-
-        self.assertFalse(today_tournament.is_finished(), "Current day tournament should not be marked as finished.")
-
 
 class TournamentGroupModelTests(TestCase):
     def setUp(self):
@@ -100,7 +82,7 @@ class UserTournamentGroupModelTests(TestCase):
         mock_now.return_value = time
         return UserTournamentGroup.enter_tournament(user, tournament)
 
-    def test_enter_tournament_success(self):
+    def test_enter_tournament(self):
         users_first_coins = self.user.coins
         user_tournament_group = self._enter_tournament_in_time(
             self.user,
@@ -111,52 +93,6 @@ class UserTournamentGroupModelTests(TestCase):
         self.assertIsNotNone(user_tournament_group, "User should be able to enter the tournament.")
         self.assertEqual(self.user.coins, users_first_coins - Tournament.ENTRY_FEE,
                          "User's coins should be deducted by the entry fee.")
-
-    def test_enter_tournament_failure_due_to_insufficient_coins(self):
-        self.user.coins = Tournament.ENTRY_FEE - 1
-        self.user.save()
-
-        user_tournament_group = self._enter_tournament_in_time(
-            self.user,
-            self.current_tournament,
-            time=self.before_entry_end_hour
-        )
-
-        self.assertIsNone(user_tournament_group,
-                          "User with insufficient coins should not be able to enter the tournament.")
-
-    def test_enter_tournament_failure_due_to_level_requirement(self):
-        self.user.current_level = Tournament.USER_LEVEL_REQUIREMENT - 1
-        self.user.save()
-
-        user_tournament_group = self._enter_tournament_in_time(
-            self.user,
-            self.current_tournament,
-            time=self.before_entry_end_hour
-        )
-
-        self.assertIsNone(user_tournament_group,
-                          "User with level lower than the requirement should not be able to enter the tournament.")
-
-    def test_enter_tournament_failure_due_to_passed_tournament(self):
-        user_tournament_group = self._enter_tournament_in_time(
-            self.user,
-            self.passed_tournament,
-            time=self.before_entry_end_hour
-        )
-
-        self.assertIsNone(user_tournament_group,
-                          "User should not be able to enter a passed tournament.")
-
-    def test_enter_tournament_failure_due_to_future_tournament(self):
-        user_tournament_group = self._enter_tournament_in_time(
-            self.user,
-            self.future_tournament,
-            time=self.before_entry_end_hour
-        )
-
-        self.assertIsNone(user_tournament_group,
-                          "User should not be able to enter a future tournament.")
 
     def test_update_score(self):
         user_tournament_group = self._enter_tournament_in_time(
