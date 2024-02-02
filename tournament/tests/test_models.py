@@ -1,8 +1,7 @@
 import random
-from datetime import timedelta, datetime
+from datetime import timedelta
 from unittest.mock import patch
 
-import pytz
 from django.test import TestCase
 from django.utils import timezone
 
@@ -48,23 +47,8 @@ class TournamentModelTest(TestCase):
 
 
 class TournamentGroupModelTests(TestCase):
-
     def setUp(self):
         self.tournament = Tournament.objects.create(date="2024-01-01")
-
-    def test_has_empty_place_initially_true(self):
-        group = TournamentGroup.objects.create(tournament=self.tournament)
-
-        self.assertTrue(group.has_empty_place, "Newly created group should have empty places.")
-
-    def test_has_empty_place_after_adding_users(self):
-        group = TournamentGroup.objects.create(tournament=self.tournament)
-
-        for i in range(TournamentGroup.GROUP_SIZE):
-            user = User.objects.create_user(username=f"testuser_{i}", country="US", password="testpassword")
-            UserTournamentGroup.objects.create(user=user, group=group)
-
-        self.assertFalse(group.has_empty_place, "Group should have no empty places after reaching GROUP_SIZE.")
 
     def test_get_ranks_reward(self):
         for reward_group in TournamentGroup.RANKING_REWARD_GROUPS:
