@@ -56,10 +56,6 @@ class TournamentGroup(models.Model):
 
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='groups')
 
-    @property
-    def has_empty_place(self):
-        return self.users.count() < self.GROUP_SIZE
-
     @classmethod
     def get_ranks_reward(cls, rank):
         for reward_group in cls.RANKING_REWARD_GROUPS:

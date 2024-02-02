@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django_countries.fields import CountryField
 
-from tournament.models import Tournament
-
 
 class UserManager(BaseUserManager):
     def create_user(self, username, country, password=None):
