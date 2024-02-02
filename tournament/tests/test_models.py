@@ -47,7 +47,6 @@ class TournamentGroupModelTests(TestCase):
 
     def test_is_eligible_for_reward(self):
         for reward_group in TournamentGroup.RANKING_REWARD_GROUPS:
-
             self.assertTrue(
                 TournamentGroup.is_eligible_for_reward(reward_group["end"]),
                 f"Rank {reward_group['end']} should be eligible for reward."
@@ -93,6 +92,9 @@ class UserTournamentGroupModelTests(TestCase):
         self.assertIsNotNone(user_tournament_group, "User should be able to enter the tournament.")
         self.assertEqual(self.user.coins, users_first_coins - Tournament.ENTRY_FEE,
                          "User's coins should be deducted by the entry fee.")
+        self.assertEqual(user_tournament_group.score, 0, "User's score should be initialized to 0.")
+        self.assertEqual(user_tournament_group.group.tournament, self.current_tournament)
+        self.assertEqual(user_tournament_group.user, self.user)
 
     def test_update_score(self):
         user_tournament_group = self._enter_tournament_in_time(
