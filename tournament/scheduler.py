@@ -3,6 +3,7 @@ import os
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from django.utils import timezone
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 
@@ -32,4 +33,10 @@ def start():
         max_instances=1,
         replace_existing=True,
     )
+
+    try:
+        Tournament.get_current_tournament()
+    except Tournament.DoesNotExist:
+        Tournament.objects.create(date=timezone.now().date())
+
     scheduler.start()
