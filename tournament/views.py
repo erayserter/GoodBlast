@@ -54,26 +54,19 @@ class ClaimTournamentReward(GenericAPIView):
         users_passed_completed_groups = UserTournamentGroup.objects.filter(
             user=user,
             claimed_reward=False,
-            group__tournament__date__lt=timezone.now().date()
+            group__tournament__date__lt=timezone.now().date(),
         )
+
+        if tournament_id:
+            users_passed_completed_groups = users_passed_completed_groups.filter(group__tournament__id=tournament_id)
 
         if not users_passed_completed_groups:
             return Response({
-                "message": "There is no tournament you have ever completed and not received the rewards."
+                "message": f"There is no tournament you have ever completed and not received the rewards."
             }, status=status.HTTP_404_NOT_FOUND)
 
-        if not tournament_id:
-            for group in users_passed_completed_groups:
-                group.claim_reward()
-        else:
-            users_tournament_group = users_passed_completed_groups.filter(group__tournament__id=tournament_id).first()
-
-            if not users_tournament_group:
-                return Response({
-                    "message": "There is no completed tournament with this ID."
-                }, status=status.HTTP_404_NOT_FOUND)
-
-            users_tournament_group.claim_reward()
+        for group in users_passed_completed_groups:
+            group.claim_reward()
 
         user.refresh_from_db(fields=('coins',))
 
