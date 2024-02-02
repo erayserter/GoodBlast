@@ -15,17 +15,17 @@ class EnterTournament(GenericAPIView):
 
         if timezone.now().hour >= Tournament.ENTRY_END_HOUR:
             return Response({
-                "message": "Tournament entry time has passed."
+                "message": f"Tournament entry hour {Tournament.ENTRY_END_HOUR} UTC has passed."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         if user.coins < Tournament.ENTRY_FEE:
             return Response({
-                "message": "You do not have enough coins to enter the tournament."
+                "message": f"You should have at least {Tournament.ENTRY_FEE} coins to enter the tournament."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         if user.current_level < Tournament.USER_LEVEL_REQUIREMENT:
             return Response({
-                "message": "You do not have enough level to enter the tournament."
+                "message": f"You should be at least level {Tournament.USER_LEVEL_REQUIREMENT} to enter the tournament."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         tournament = Tournament.get_current_tournament()
@@ -74,6 +74,8 @@ class ClaimTournamentReward(GenericAPIView):
                 }, status=status.HTTP_404_NOT_FOUND)
 
             users_tournament_group.claim_reward()
+
+        user.refresh_from_db(fields=('coins',))
 
         return Response({
             "message": "Successfully claimed tournament rewards.",
