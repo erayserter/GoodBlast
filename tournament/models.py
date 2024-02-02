@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.db import models, transaction
-from django.db.models import Window, F
+from django.db.models import Window, F, Count
 from django.db.models.functions import Rank
 from django.utils import timezone
 
@@ -24,9 +24,6 @@ class Tournament(models.Model):
     @classmethod
     def get_current_tournament(cls):
         return cls.objects.get(date=timezone.now().date())
-
-    def is_finished(self):
-        return self.date < timezone.now().date()
 
 
 class TournamentGroup(models.Model):
@@ -85,20 +82,12 @@ class UserTournamentGroup(models.Model):
     @classmethod
     @transaction.atomic
     def enter_tournament(cls, user, tournament):
-        utc_now = timezone.now()
-
-        if (user.coins < tournament.ENTRY_FEE
-                or user.current_level < tournament.USER_LEVEL_REQUIREMENT
-                or utc_now > utc_now.replace(hour=12, minute=0, second=0, microsecond=0)
-                or utc_now.date() != tournament.date
-                or cls.objects.filter(user=user, group__tournament=tournament).exists()):
-            return None
-
         user.coins -= tournament.ENTRY_FEE
 
-        non_full_groups = tournament.groups.filter(users__lt=TournamentGroup.GROUP_SIZE)
+        non_full_groups = tournament.groups.annotate(user_count=Count('users')).filter(user_count__lt=TournamentGroup.GROUP_SIZE)
 
         tournament_group = non_full_groups.first()
+
         if not tournament_group:
             tournament_group = TournamentGroup(tournament=tournament)
 
