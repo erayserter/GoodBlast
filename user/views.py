@@ -37,11 +37,11 @@ class UserUpdateProgress(GenericAPIView):
         user.complete_levels(completed_level_count)
 
         tournament = Tournament.get_current_tournament()
-        user_group = UserTournamentGroup.objects.filter(user=user, tournament=tournament)
+        user_group = UserTournamentGroup.objects.filter(user=user, group__tournament=tournament)
 
         if user_group.exists():
             user_group = user_group.first()
-            user_group.update_progress(completed_level_count)
+            user_group.update_score(completed_level_count)
 
         return Response({
             "coins": user.coins,

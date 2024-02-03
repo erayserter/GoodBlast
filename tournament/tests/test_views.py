@@ -191,3 +191,30 @@ class ClaimTournamentRewardViewTest(APITestCase):
             })
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class ProgressInTournamentTest(APITestCase):
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = User.objects.create(
+            username='test',
+            password='testpassword',
+            country='US',
+            current_level=Tournament.USER_LEVEL_REQUIREMENT,
+            coins=Tournament.ENTRY_FEE
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_success(self):
+        tournament = Tournament.objects.create(date=timezone.now().date())
+        group = TournamentGroup.objects.create(tournament=tournament)
+        UserTournamentGroup.objects.create(user=self.user, group=group, score=1)
+
+        progressed_level_count = 10
+        first_levels = self.user.current_level
+
+        self.client.get(reverse('enter-tournament'))
+        self.client.post(reverse('user-progress', kwargs={"username": self.user.username}), data={"completed_level_count": progressed_level_count})
+
+        self.assertEqual(self.user.current_level, first_levels + progressed_level_count)
+
