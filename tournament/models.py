@@ -98,21 +98,15 @@ class UserTournamentGroup(models.Model):
 
         return user_tournament_group
 
-    @classmethod
-    def get_group_with_ranks(cls, group):
-        return cls.objects.filter(group=group).annotate(
-            rank=Window(
-                expression=Rank(),
-                order_by=F('score').desc(),
-            )
-        )
+    def get_rank(self):
+        return UserTournamentGroup.objects.filter(
+            group=self.group,
+            score__gte=self.score
+        ).distinct('score').count()
 
-    def claim_reward(self):
+    def claim_reward(self, rank):
         if self.claimed_reward:
             raise ValueError("User has already claimed the reward.")
-
-        ranked_group = self.get_group_with_ranks(self.group)
-        rank = ranked_group.get(user=self.user).rank
 
         if not TournamentGroup.is_eligible_for_reward(rank):
             raise ValueError("User is not eligible for the reward.")

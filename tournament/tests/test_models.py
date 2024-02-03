@@ -118,7 +118,7 @@ class UserTournamentGroupModelTests(TestCase):
             time=self.before_entry_end_hour
         )
         user_tournament_group.update_score(100)
-        user_tournament_group.claim_reward()
+        user_tournament_group.claim_reward(1)
 
         self.assertTrue(user_tournament_group.claimed_reward, "User should have claimed the reward.")
         expected_coins = users_first_coins - Tournament.ENTRY_FEE + TournamentGroup.get_ranks_reward(1)
@@ -131,24 +131,7 @@ class UserTournamentGroupModelTests(TestCase):
             time=self.before_entry_end_hour
         )
         user_tournament_group.update_score(100)
-        user_tournament_group.claim_reward()
+        user_tournament_group.claim_reward(1)
 
         with self.assertRaises(ValueError):
-            user_tournament_group.claim_reward()
-
-    def test_get_group_with_ranks(self):
-        scores = [random.randint(1, 1000) for _ in range(10)]
-
-        tournament_group = TournamentGroup.objects.create(tournament=self.current_tournament)
-
-        for index, score in enumerate(scores):
-            user = User.objects.create_user(username=f"testuser_{index}", country="US", password="testpassword")
-            UserTournamentGroup.objects.create(user=user, group=tournament_group, score=score)
-
-        tournament_group_with_ranks = UserTournamentGroup.get_group_with_ranks(tournament_group)
-        ranked = tournament_group_with_ranks.order_by("-score").values_list("score", flat=True)
-
-        self.assertListEqual(list(ranked), sorted(scores, reverse=True),
-                             "Users should be ranked by their score in the group.")
-
-
+            user_tournament_group.claim_reward(1)

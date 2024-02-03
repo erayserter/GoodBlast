@@ -1,10 +1,12 @@
+from django.db.models import Window, F
+from django.db.models.functions import Rank
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from tournament.models import Tournament, UserTournamentGroup
+from tournament.models import Tournament, UserTournamentGroup, TournamentGroup
 
 
 class EnterTournament(GenericAPIView):
@@ -52,10 +54,17 @@ class ClaimTournamentReward(GenericAPIView):
         user = request.user
 
         users_passed_completed_groups = UserTournamentGroup.objects.filter(
-            user=user,
             claimed_reward=False,
             group__tournament__date__lt=timezone.now().date(),
-        )
+        ).annotate(
+            rank=Window(
+                expression=Rank(),
+                order_by=F('score').desc(),
+                partition_by=F('group')
+            )
+        ).filter(rank__lte=TournamentGroup.RANKING_REWARD_GROUPS[-1]["end"])
+
+        users_passed_completed_groups = users_passed_completed_groups.filter(pk__in=users_passed_completed_groups, user=user)
 
         if tournament_id:
             users_passed_completed_groups = users_passed_completed_groups.filter(group__tournament__id=tournament_id)
@@ -66,7 +75,8 @@ class ClaimTournamentReward(GenericAPIView):
             }, status=status.HTTP_404_NOT_FOUND)
 
         for group in users_passed_completed_groups:
-            group.claim_reward()
+            rank = group.get_rank()
+            group.claim_reward(rank)
 
         user.refresh_from_db(fields=('coins',))
 
