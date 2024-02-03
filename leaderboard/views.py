@@ -74,11 +74,11 @@ class UserGroupRank(APIView):
                 "message": "You are not in an active tournament group."
             }, status=status.HTTP_404_NOT_FOUND)
 
-        scores = UserTournamentGroup.objects.filter(
+        rank = UserTournamentGroup.objects.filter(
             group=user_tournament_group.group,
             score__gte=user_tournament_group.score
         ).distinct('score').count()
 
         return Response({
-            "rank": scores
+            "rank": rank
         }, status=status.HTTP_200_OK)
