@@ -49,7 +49,7 @@ class User(AbstractBaseUser):
 
     LEVEL_COMPLETE_COIN_REWARD = 100
 
-    def complete_levels(self, level_count):
+    def complete_levels(self, level_count=1):
         self.current_level += level_count
         self.coins += self.LEVEL_COMPLETE_COIN_REWARD * level_count
         self.save()

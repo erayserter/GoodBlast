@@ -1,8 +1,10 @@
 from django.urls import reverse
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
+from tournament.models import TournamentGroup, UserTournamentGroup, Tournament
 from user.models import User
 
 
@@ -116,7 +118,7 @@ class LoginViewTest(APITestCase):
         self.assertIsNotNone(response.data.get('access'))
 
 
-class UserDetailViewTestCase(APITestCase):
+class UserDetailViewTest(APITestCase):
     def setUp(self):
         self.user = User(
             username='test',
@@ -190,3 +192,52 @@ class UserDetailViewTestCase(APITestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class UserUpdateProgressViewTest(APITestCase):
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username='test',
+            password='testpassword',
+            country='GB'
+        )
+        self.client.force_authenticate(user=self.user)
+        self.tournament = Tournament.objects.create(date=timezone.now().date())
+        self.url = reverse('user-progress', kwargs={"username": self.user.username})
+
+    def test_success(self):
+        first_coins = self.user.coins
+        first_level = self.user.current_level
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get('coins'), first_coins + User.LEVEL_COMPLETE_COIN_REWARD)
+        self.assertEqual(response.data.get('current_level'), first_level + 1)
+        self.assertEqual(self.user.coins, first_coins + User.LEVEL_COMPLETE_COIN_REWARD)
+        self.assertEqual(self.user.current_level, first_level + 1)
+
+    def test_update_progress_in_tournament(self):
+        group = TournamentGroup.objects.create(tournament=self.tournament)
+        user_tournament_group = UserTournamentGroup.objects.create(user=self.user, group=group)
+
+        first_score = user_tournament_group.score
+        first_coins = self.user.coins
+
+        response = self.client.post(self.url)
+
+        user_tournament_group.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get('coins'), first_coins + User.LEVEL_COMPLETE_COIN_REWARD)
+        self.assertEqual(user_tournament_group.score, first_score + 1)
+        self.assertEqual(self.user.coins, first_coins + User.LEVEL_COMPLETE_COIN_REWARD)
+        self.assertEqual(user_tournament_group.score, first_score + 1)
+
+    def test_update_progress_without_auth(self):
+        self.client.logout()
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

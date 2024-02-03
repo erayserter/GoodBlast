@@ -23,7 +23,3 @@ class UserSerializer(CountryFieldMixin, serializers.ModelSerializer):
         )
         user.save()
         return user
-
-
-class UserUpdateProcessSerializer(serializers.Serializer):
-    completed_level_count = serializers.IntegerField(min_value=1)

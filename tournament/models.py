@@ -119,7 +119,7 @@ class UserTournamentGroup(models.Model):
         self.user.save()
         self.save()
 
-    def update_score(self, completed_level_count):
+    def update_score(self, completed_level_count=1):
         self.score += completed_level_count
         self.save()
         return self.score

@@ -2,10 +2,11 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from tournament.models import Tournament, UserTournamentGroup
 from user.permissions import IsPersonalAccountOrReadOnly
-from user.serializers import UserSerializer, UserUpdateProcessSerializer
+from user.serializers import UserSerializer
 from user.models import User
 
 
@@ -22,26 +23,19 @@ class UserRetrieveDestroy(RetrieveDestroyAPIView):
     lookup_field = 'username'
 
 
-class UserUpdateProgress(GenericAPIView):
+class UserUpdateProgress(APIView):
     permission_classes = [IsAuthenticated, IsPersonalAccountOrReadOnly, ]
-    serializer_class = UserUpdateProcessSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        completed_level_count = serializer.validated_data.get('completed_level_count')
-
         user = request.user
-        user.complete_levels(completed_level_count)
+        user.complete_levels()
 
         tournament = Tournament.get_current_tournament()
         user_group = UserTournamentGroup.objects.filter(user=user, group__tournament=tournament)
 
         if user_group.exists():
             user_group = user_group.first()
-            user_group.update_score(completed_level_count)
+            user_group.update_score()
 
         return Response({
             "coins": user.coins,
