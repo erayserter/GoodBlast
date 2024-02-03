@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from tournament.models import Tournament, UserTournamentGroup, TournamentGroup
+from tournament.serializer import TournamentIDSerializer
 
 
 class EnterTournament(GenericAPIView):
@@ -50,7 +51,11 @@ class ClaimTournamentReward(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
 
     def post(self, request, *args, **kwargs):
-        tournament_id = request.data.get("tournament")
+        tournament_id = request.query_params.get('tournament')
+        serializer = TournamentIDSerializer(data={"tournament": tournament_id})
+        if tournament_id and not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         user = request.user
 
         users_passed_completed_groups = UserTournamentGroup.objects.filter(
