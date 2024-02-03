@@ -174,3 +174,20 @@ class ClaimTournamentRewardViewTest(APITestCase):
         response = self.client.post(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_failure_due_to_no_eligible_rank(self):
+        now = timezone.now()
+        tournament = Tournament.objects.create(date=now.date())
+        group = TournamentGroup.objects.create(tournament=tournament)
+        UserTournamentGroup.objects.create(user=self.user, group=group, score=1)
+
+        for i in range(2, TournamentGroup.RANKING_REWARD_GROUPS[-1]['end'] + 2):
+            UserTournamentGroup.objects.create(user=User.objects.create(username=f'test{i}'), group=group, score=i)
+
+        with mock.patch('django.utils.timezone.now') as mock_now:
+            mock_now.return_value = now + timezone.timedelta(days=1)
+            response = self.client.post(self.url, data={
+                'tournament': tournament.id
+            })
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
