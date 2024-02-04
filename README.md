@@ -13,6 +13,7 @@
 
 ## Instructions
 - Service is deployed to `Google Cloud App Engine` and can be accessed at: `https://good-blast-413306.uc.r.appspot.com/`
+- You want to change your postman JWT variables value with the new token that is generated from the `/api/users/token` endpoint.
 - Source code has a `Dockerfile` and `docker-compose.yml` to run the service in a container. API can be run with `docker-compose up` command.
 - Service can be run locally with `python manage.py runserver` command after setting `SECRET_KEY`, `DEBUG`, `DATABASE_URL` environment variables. 
   - Local Environment Requirements:
