@@ -1,0 +1,508 @@
+{
+	"info": {
+		"_postman_id": "ec4a4775-9b97-4a56-a954-fa03df4aa3d1",
+		"name": "Good Blast",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21189706"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"erayserter\",\r\n    \"country\": \"TR\",\r\n    \"password\": \"erayserter123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Progress User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/erayserter/progress",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"users",
+								"erayserter",
+								"progress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"erayserter\",\r\n    \"password\": \"erayserter123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/token",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"users",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwNjcwNzMwMCwiaWF0IjoxNzA2NjIwOTAwLCJqdGkiOiIyOTU3NzY5ODVlNDQ0ZDVlYmE3YjMxMGJkMzQ1NzdlNCIsInVzZXJfaWQiOjE0fQ.At7XXRsChfHJGqKOpSi_8E9ZomWny_Q1x300amMPRfs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/token/refresh/",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"token",
+								"refresh",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/erayserter",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"users",
+								"erayserter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/erayserter",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"users",
+								"erayserter"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tournament",
+			"item": [
+				{
+					"name": "Enter Tournament",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/tournament/enter",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"tournament",
+								"enter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Claim Reward Tournament",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/tournament/claim-reward?tournament=1",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"tournament",
+								"claim-reward"
+							],
+							"query": [
+								{
+									"key": "tournament",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Tournament Progress Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/tournament/1",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"tournament",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leaderboard",
+			"item": [
+				{
+					"name": "Global Leaderboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/leaderboard/global",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"leaderboard",
+								"global"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Country Leaderboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/leaderboard/country",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"leaderboard",
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group Leaderboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/leaderboard/group",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"leaderboard",
+								"group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Group Rank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/leaderboard/rank",
+							"protocol": "https",
+							"host": [
+								"good-blast-413306",
+								"uc",
+								"r",
+								"appspot",
+								"com"
+							],
+							"path": [
+								"api",
+								"leaderboard",
+								"rank"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{JWT}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "JWT",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA5NjI5OTEwLCJpYXQiOjE3MDcwMzc5MTAsImp0aSI6ImYzNWYyMTkwNTllMDQ2Njg4NTI1MDhlZWEwNDUyZWI3IiwidXNlcl9pZCI6Mn0.rGgB0TKPfgImlHc2KpwVZMB_ElibfJ4ogNpUsHn4RqI"
+		}
+	]
+}
