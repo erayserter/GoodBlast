@@ -2,7 +2,7 @@ from django.db.models import Window, F
 from django.db.models.functions import Rank
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -47,13 +47,41 @@ class EnterTournament(GenericAPIView):
         }, status=status.HTTP_200_OK)
 
 
+class UserTournamentScoreDetails(GenericAPIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, *args, **kwargs):
+        tournament_id = kwargs.get('tournament')
+        serializer = TournamentIDSerializer(data={"tournament": tournament_id})
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        user_tournament_group = UserTournamentGroup.objects.filter(
+            user=user,
+            group__tournament__id=tournament_id
+        ).first()
+
+        if not user_tournament_group:
+            return Response({
+                "message": f"You have not entered the tournament with ID {tournament_id}."
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({
+            "tournament": user_tournament_group.group.tournament.id,
+            "group": user_tournament_group.group.id,
+            "score": user_tournament_group.score
+        }, status=status.HTTP_200_OK)
+
+
 class ClaimTournamentReward(GenericAPIView):
     permission_classes = [IsAuthenticated, ]
 
     def post(self, request, *args, **kwargs):
-        tournament_id = request.query_params.get('tournament')
-        serializer = TournamentIDSerializer(data={"tournament": tournament_id})
-        if tournament_id and not serializer.is_valid():
+        tournament_id_parameter = request.query_params.get('tournament')
+        serializer = TournamentIDSerializer(data={"tournament": tournament_id_parameter})
+        if tournament_id_parameter and not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
@@ -71,7 +99,8 @@ class ClaimTournamentReward(GenericAPIView):
 
         users_passed_completed_groups = users_passed_completed_groups.filter(pk__in=users_passed_completed_groups, user=user)
 
-        if tournament_id:
+        if tournament_id_parameter:
+            tournament_id = serializer.validated_data.get('tournament')
             users_passed_completed_groups = users_passed_completed_groups.filter(group__tournament__id=tournament_id)
 
         if not users_passed_completed_groups:
