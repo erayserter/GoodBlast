@@ -11,3 +11,5 @@ db.sqlite3
 # Virtual Environment
 .env*
 .venv
+
+static/
