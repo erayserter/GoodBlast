@@ -45,7 +45,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['country_code', ]
+    REQUIRED_FIELDS = ['country', ]
 
     LEVEL_COMPLETE_COIN_REWARD = 100
 
