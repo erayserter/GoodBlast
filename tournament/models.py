@@ -50,8 +50,10 @@ class TournamentGroup(models.Model):
             "price": 1000
         }
     ]
+    LEVEL_BUCKET_SIZE = 100
 
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='groups')
+    level_bucket = models.IntegerField(default=0)
 
     @classmethod
     def get_ranks_reward(cls, rank):
@@ -82,13 +84,17 @@ class UserTournamentGroup(models.Model):
     @transaction.atomic
     def enter_tournament(cls, user, tournament):
         user.coins -= tournament.ENTRY_FEE
+        level_bucket = user.current_level // TournamentGroup.LEVEL_BUCKET_SIZE
 
-        non_full_groups = tournament.groups.annotate(user_count=Count('users')).filter(user_count__lt=TournamentGroup.GROUP_SIZE)
+        non_full_groups = tournament.groups\
+            .filter(level_bucket=level_bucket)\
+            .annotate(user_count=Count('users'))\
+            .filter(user_count__lt=TournamentGroup.GROUP_SIZE)
 
         tournament_group = non_full_groups.first()
 
         if not tournament_group:
-            tournament_group = TournamentGroup(tournament=tournament)
+            tournament_group = TournamentGroup(tournament=tournament, level_bucket=level_bucket)
 
         user_tournament_group = cls(user=user, group=tournament_group)
 

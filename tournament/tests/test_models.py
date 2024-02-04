@@ -95,6 +95,8 @@ class UserTournamentGroupModelTests(TestCase):
         self.assertEqual(user_tournament_group.score, 0, "User's score should be initialized to 0.")
         self.assertEqual(user_tournament_group.group.tournament, self.current_tournament)
         self.assertEqual(user_tournament_group.user, self.user)
+        self.assertEqual(user_tournament_group.group.level_bucket,
+                         self.user.current_level // TournamentGroup.LEVEL_BUCKET_SIZE)
 
     def test_update_score(self):
         user_tournament_group = self._enter_tournament_in_time(

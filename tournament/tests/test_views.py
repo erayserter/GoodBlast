@@ -211,6 +211,7 @@ class ProgressInTournamentTest(APITestCase):
         UserTournamentGroup.objects.create(user=self.user, group=group, score=1)
 
         first_levels = self.user.current_level
+        first_coins = self.user.coins
 
         self.client.get(reverse('enter-tournament'))
         response = self.client.post(reverse('user-progress', kwargs={"username": self.user.username}))
@@ -218,7 +219,7 @@ class ProgressInTournamentTest(APITestCase):
         self.user.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(self.user.coins, Tournament.ENTRY_FEE + User.LEVEL_COMPLETE_COIN_REWARD)
+        self.assertEqual(self.user.coins, first_coins + User.LEVEL_COMPLETE_COIN_REWARD)
         self.assertEqual(self.user.current_level, first_levels + 1)
 
 
