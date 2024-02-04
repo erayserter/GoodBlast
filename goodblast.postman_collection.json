@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"erayserter\",\r\n    \"country\": \"TR\",\r\n    \"password\": \"erayserter123456\"\r\n}",
+							"raw": "{\r\n    \"username\": \"testuser\",\r\n    \"country\": \"TR\",\r\n    \"password\": \"testuser123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -58,7 +58,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/erayserter/progress",
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/testuser/progress",
 							"protocol": "https",
 							"host": [
 								"good-blast-413306",
@@ -70,7 +70,7 @@
 							"path": [
 								"api",
 								"users",
-								"erayserter",
+								"testuser",
 								"progress"
 							]
 						}
@@ -84,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"erayserter\",\r\n    \"password\": \"erayserter123456\"\r\n}",
+							"raw": "{\r\n    \"username\": \"testuser\",\r\n    \"password\": \"testuser123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -160,7 +160,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/erayserter",
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/testuser",
 							"protocol": "https",
 							"host": [
 								"good-blast-413306",
@@ -172,7 +172,7 @@
 							"path": [
 								"api",
 								"users",
-								"erayserter"
+								"testuser"
 							]
 						}
 					},
@@ -194,7 +194,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/erayserter",
+							"raw": "https://good-blast-413306.uc.r.appspot.com/api/users/testuser",
 							"protocol": "https",
 							"host": [
 								"good-blast-413306",
@@ -206,7 +206,7 @@
 							"path": [
 								"api",
 								"users",
-								"erayserter"
+								"testuser"
 							]
 						}
 					},
@@ -502,7 +502,7 @@
 	"variable": [
 		{
 			"key": "JWT",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA5NjI5OTEwLCJpYXQiOjE3MDcwMzc5MTAsImp0aSI6ImYzNWYyMTkwNTllMDQ2Njg4NTI1MDhlZWEwNDUyZWI3IiwidXNlcl9pZCI6Mn0.rGgB0TKPfgImlHc2KpwVZMB_ElibfJ4ogNpUsHn4RqI"
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA5NjYwMzQ2LCJpYXQiOjE3MDcwNjgzNDYsImp0aSI6ImYyNmYwOGE2MTZiZTQ2NDY4MmVkODczMjkwM2QxYmNiIiwidXNlcl9pZCI6NH0.iIMqim7cYAtgKhlyuZd1kkoxqsK5wpz_V8CGHK5_-h8"
 		}
 	]
 }
