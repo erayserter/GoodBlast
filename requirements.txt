@@ -29,9 +29,11 @@ googleapis-common-protos==1.62.0
 grpc-google-iam-v1==0.13.0
 grpcio==1.60.1
 grpcio-status==1.60.1
+gunicorn==21.2.0
 idna==3.6
 kombu==5.3.5
 Markdown==3.5.2
+packaging==23.2
 prompt-toolkit==3.0.43
 proto-plus==1.23.0
 protobuf==4.25.2
