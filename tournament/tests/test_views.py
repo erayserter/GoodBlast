@@ -116,7 +116,7 @@ class ClaimTournamentRewardViewTest(APITestCase):
 
         with mock.patch('django.utils.timezone.now') as mock_now:
             mock_now.return_value = now + timezone.timedelta(days=1)
-            response = self.client.post(self.url, data={'tournament': tournament.id})
+            response = self.client.post(self.url + f"?tournament={tournament.id}")
 
         new_coins = TournamentGroup.get_ranks_reward(1) + self.old_coins - Tournament.ENTRY_FEE * 2
 
@@ -221,3 +221,46 @@ class ProgressInTournamentTest(APITestCase):
         self.assertEqual(self.user.coins, Tournament.ENTRY_FEE + User.LEVEL_COMPLETE_COIN_REWARD)
         self.assertEqual(self.user.current_level, first_levels + 1)
 
+
+class UserTournamentScoreDetailsViewTest(APITestCase):
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = User.objects.create(
+            username='test',
+            password='testpassword',
+            country='US',
+            current_level=Tournament.USER_LEVEL_REQUIREMENT,
+            coins=Tournament.ENTRY_FEE
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_success(self):
+        tournament = Tournament.objects.create(date=timezone.now().date())
+        group = TournamentGroup.objects.create(tournament=tournament)
+        user_group = UserTournamentGroup.objects.create(user=self.user, group=group, score=1)
+
+        response = self.client.get(reverse('user-tournament-score-details', kwargs={"tournament": tournament.id}))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get('tournament'), tournament.id)
+        self.assertEqual(response.data.get('group'), group.id)
+        self.assertEqual(response.data.get('score'), user_group.score)
+
+    def test_failure_due_to_no_user(self):
+        self.client.logout()
+
+        response = self.client.get(reverse('user-tournament-score-details', kwargs={"tournament": 1}))
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_failure_due_to_no_tournament(self):
+        response = self.client.get(reverse('user-tournament-score-details', kwargs={"tournament": 1}))
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_failure_due_to_no_group(self):
+        tournament = Tournament.objects.create(date=timezone.now().date())
+
+        response = self.client.get(reverse('user-tournament-score-details', kwargs={"tournament": tournament.id}))
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
