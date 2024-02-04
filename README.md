@@ -8,6 +8,7 @@
 - [Technologies](#technologies)
 - [Testing](#testing)
   - [Last Test Execution Coverage Report](#last-test-execution-coverage-report)
+- [Further Improvements](#further-improvements)
 
 
 ## Instructions
@@ -18,10 +19,14 @@
     - `Python 3.11`
     - `PostgreSQL 14`
 
+
 ## Implementation Details
 - Users can register and login to the system. 
 - After login, users can access endpoints via JWT tokens. 
-- Users can enter daily tournaments that are created daily. 
+- Users can enter daily tournaments that are created daily.
+- Users will be assigned to a group with level bucket strategy.
+- Users with different current levels will be assigned to different groups.
+- This can be useful to prevent high level users to compete with low level users.
 - Tournaments created with a cron job a day before it starts. 
 - Users can claim rewards if they are elligible for it. 
 - If a user progress levels in a tournament with update progress endpoint it will increase their tournament score.
@@ -89,7 +94,7 @@ Name                                                                  Stmts   Mi
 leaderboard/__init__.py                                                   0      0   100%
 leaderboard/apps.py                                                       4      4     0%
 leaderboard/migrations/__init__.py                                        0      0   100%
-leaderboard/serializers.py                                                9      2    78%
+leaderboard/serializers.py                                                9      0   100%
 leaderboard/tests/__init__.py                                             0      0   100%
 leaderboard/tests/test_serializers.py                                    12      0   100%
 leaderboard/tests/test_views.py                                          85      0   100%
@@ -100,14 +105,15 @@ tournament/admin.py                                                       1     
 tournament/apps.py                                                        7      0   100%
 tournament/migrations/0001_initial.py                                     7      0   100%
 tournament/migrations/0002_remove_usertournamentgroup_entered_at.py       4      0   100%
+tournament/migrations/0003_tournamentgroup_level_bucket.py                4      0   100%
 tournament/migrations/__init__.py                                         0      0   100%
-tournament/models.py                                                     71      1    99%
+tournament/models.py                                                     74      1    99%
 tournament/scheduler.py                                                  21      9    57%
 tournament/serializer.py                                                  8      0   100%
 tournament/tests/__init__.py                                              0      0   100%
-tournament/tests/test_models.py                                          71      0   100%
+tournament/tests/test_models.py                                          72      0   100%
 tournament/tests/test_serializers.py                                     14      0   100%
-tournament/tests/test_views.py                                          165      0   100%
+tournament/tests/test_views.py                                          166      0   100%
 tournament/urls.py                                                        3      0   100%
 tournament/views.py                                                      56      2    96%
 user/__init__.py                                                          0      0   100%
@@ -125,5 +131,11 @@ user/tests/test_views.py                                                120     
 user/urls.py                                                              4      0   100%
 user/views.py                                                            29      0   100%
 -----------------------------------------------------------------------------------------
-TOTAL                                                                   882     23    97%
+TOTAL                                                                   891     21    98%
 ```
+
+
+## Further Improvements
+- Tournament level buckets can be dynamic sized.
+- Number of users that are attending to a tournament can be estimated and groups can be distributed more equivalently.
+- Leaderboard can be paginated.
