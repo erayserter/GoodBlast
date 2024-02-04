@@ -14,7 +14,7 @@ class LeaderboardSerializerTest(TestCase):
 
         serializer = LeaderboardSerializer(user_tournament_group)
         self.assertEqual(serializer.data, {
-            'user': user.id,
+            'user': user.username,
             'country': user.country,
             'score': user_tournament_group.score
         })

@@ -97,11 +97,11 @@ class GroupLeaderboard(LeaderboardViewTest):
 
         response = self.client.get(url)
 
-        user_ids = list(map(lambda x: x['user'], response.data))
+        usernames = list(map(lambda x: x['user'], response.data))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(len(response.data) <= TournamentGroup.GROUP_SIZE)
-        self.assertTrue(self.user.id in user_ids)
+        self.assertTrue(self.user.username in usernames)
 
     @patch('tournament.models.Tournament.get_current_tournament')
     def test_no_users(self, mock_tournament):

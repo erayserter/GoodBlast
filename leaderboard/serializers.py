@@ -4,6 +4,7 @@ from tournament.models import UserTournamentGroup
 
 
 class LeaderboardSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username')
     country = serializers.CharField(source='user.country')
 
     class Meta:
